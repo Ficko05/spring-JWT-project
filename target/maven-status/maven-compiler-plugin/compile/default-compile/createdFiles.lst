@@ -1,0 +1,5 @@
+com\example\jtwsecurty\entitys\UserEntity.class
+com\example\jtwsecurty\controllers\HelloResource.class
+com\example\jtwsecurty\security\SecurityConfigurer.class
+com\example\jtwsecurty\JtwSecurtyApplication.class
+com\example\jtwsecurty\entitys\Roles.class
