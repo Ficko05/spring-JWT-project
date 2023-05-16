@@ -9,6 +9,7 @@ import com.example.jtwsecurty.entitys.UserEntity;
 import com.example.jtwsecurty.repository.RoleRepository;
 import com.example.jtwsecurty.repository.UserRepository;
 import com.example.jtwsecurty.security.JwtTokenGenerator;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -70,6 +68,38 @@ public class AuthController {
         String token = jwtTokenGenerator.generateToken(authentication);
 
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
+
+    }
+
+
+
+
+    // validate Bearer token
+    @GetMapping("/validate")
+    public ResponseEntity<String> validate(HttpServletRequest request){
+
+        // Retrieve the Authorization header from the request
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            // Extract the token from the Authorization header
+            String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+
+            // TODO: Implement token validation logic
+            // You can use your preferred method for token validation, such as JWT validation or session-based validation.
+            // Perform the necessary validation checks, such as token expiration, signature verification, or database lookups.
+            if(jwtTokenGenerator.validateToken(token)){
+                // If the token is valid, return a success response
+                return ResponseEntity.ok("Token is valid");
+            }
+
+            // If the token is invalid, return an error response
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+
+        // If the Authorization header is missing or does not start with "Bearer ",
+        // return an error response
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
 
     }
 
